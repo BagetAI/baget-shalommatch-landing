@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ShalomMatch - Dating App for Olim Hadashim in Tel Aviv</title>
+  <meta name="description" content="ShalomMatch is a dating app tailored for olim hadashim in Tel Aviv, combining cultural sensitivity, language support, and community connection." />
+  <style>
+    /* Tailwind CSS CDN for rapid prototyping */
+    @import url('https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css');
+  </style>
+</head>
+<body class="bg-gradient-to-r from-green-100 to-cyan-100 min-h-screen flex flex-col">
+  <header class="w-full p-6 bg-white shadow flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold text-teal-700">ShalomMatch</h1>
+    <nav class="space-x-6">
+      <a href="#features" class="text-teal-700 hover:text-teal-900 font-semibold">Features</a>
+      <a href="#waitlist" class="text-teal-700 hover:text-teal-900 font-semibold">Join Waitlist</a>
+    </nav>
+  </header>
+
+  <main class="flex-grow container mx-auto px-6 flex flex-col justify-center items-center text-center py-20">
+    <h2 class="text-4xl font-bold text-teal-900 mb-6">Find Love and Community in Tel Aviv</h2>
+    <p class="max-w-xl mb-10 text-teal-800 text-lg">
+      ShalomMatch is the first dating app designed specifically for olim hadashim in Tel Aviv — 
+      helping new immigrants connect through shared culture, language support, and community events.
+    </p>
+
+    <section id="features" class="mb-16 max-w-3xl grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-xl font-semibold text-teal-700 mb-2">Culturally Sensitive Matchmaking</h3>
+        <p class="text-teal-600">Navigate Israeli dating norms with curated tips and respectful matching filters tailored for olim backgrounds.</p>
+      </div>
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-xl font-semibold text-teal-700 mb-2">Language Assistance</h3>
+        <p class="text-teal-600">Practice Hebrew in-app using chat prompts or join local language clubs to build confidence and friendships.</p>
+      </div>
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-xl font-semibold text-teal-700 mb-2">Community Events & Networking</h3>
+        <p class="text-teal-600">Discover local events and meetups designed for olim to foster deeper connections beyond dating.</p>
+      </div>
+    </section>
+
+    <section id="waitlist" class="w-full max-w-md bg-white rounded-xl shadow p-8">
+      <h3 class="text-2xl font-bold text-teal-900 mb-4">Join the ShalomMatch Waitlist</h3>
+      <p class="mb-4 text-teal-700">Be among the first to get early access and exclusive updates!</p>
+      <form id="waitlist-form" class="space-y-4">
+        <input type="email" id="email" name="email" required placeholder="Your email address" 
+               class="w-full px-4 py-2 border border-teal-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        <button type="submit" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-semibold py-2 rounded transition">
+          Join Waitlist
+        </button>
+      </form>
+      <p id="form-message" class="mt-4 text-center font-medium"></p>
+    </section>
+  </main>
+
+  <footer class="bg-teal-900 text-white text-center py-4">
+    <p>© 2024 ShalomMatch. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('waitlist-form');
+    const message = document.getElementById('form-message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.textContent = '';
+      const emailInput = form.email.value.trim();
+      if (!emailInput || !/^\S+@\S+\.\S+$/.test(emailInput)) {
+        message.textContent = 'Please enter a valid email address.';
+        message.style.color = 'red';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: emailInput })
+        });
+
+        if (response.ok) {
+          message.textContent = 'Thank you for joining the waitlist!';
+          message.style.color = 'green';
+          form.reset();
+        } else {
+          const result = await response.json();
+          message.textContent = result.error || 'Failed to join the waitlist. Please try again.';
+          message.style.color = 'red';
+        }
+      } catch (error) {
+        message.textContent = 'Network error. Please try again later.';
+        message.style.color = 'red';
+      }
+    });
+  </script>
+</body>
+</html>
